@@ -1,0 +1,8 @@
+{
+  "name": "drone-remote-controller",
+  "integrations": {
+    "capacitor": {},
+    "cordova": {}
+  },
+  "type": "angular"
+}

@@ -1,0 +1,8 @@
+{
+  "appId": "drone.remote",
+  "appName": "drone-remote-controller",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "www",
+  "cordova": {}
+}

@@ -14,22 +14,36 @@
     </ion-toolbar>
   </ion-header>
 
-  <div id="container">
-    <p> <strong>Conn: </strong> {{ connStatus }} </p>
-    <p> <strong>Latency: </strong> {{ latency }} </p>
+  
+  <div id="container">    
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <p> <strong>Conn: </strong> {{ connStatus }} </p>
+        </ion-col>
+        <ion-col>
+          <p> <strong>Latency: </strong> {{ latency }} </p>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <h2>Accelerometer Data</h2>
+          <p> <strong>X: </strong> {{ acceleration ? acceleration.x : '-' }} </p>
+          <p> <strong>Y: </strong> {{ acceleration ? acceleration.y : '-' }} </p>
+          <p> <strong>Z: </strong> {{ acceleration ? acceleration.z : '-' }} </p>
+          <p> <strong>Time: </strong> {{ acceleration ? gyrosOrientation.timestamp : '-' }} </p>
+        </ion-col>
+        <ion-col>
+          <h2>Gyroscope Orientaion</h2>
+          <p> <strong>X: </strong> {{ gyrosOrientation ? gyrosOrientation.x : '-' }} </p>
+          <p> <strong>Y: </strong> {{ gyrosOrientation ? gyrosOrientation.y : '-' }} </p>
+          <p> <strong>Z: </strong> {{ gyrosOrientation ? gyrosOrientation.z : '-' }} </p>
+          <p> <strong>Time: </strong> {{ gyrosOrientation ? gyrosOrientation.timestamp : '-' }} </p>
+        </ion-col>        
+      </ion-row>
+    </ion-grid>
     
-    <h2>Accelerometer Data</h2>
-    <p> <strong>X: </strong> {{ acceleration ? acceleration.x : '-' }} </p>
-    <p> <strong>Y: </strong> {{ acceleration ? acceleration.y : '-' }} </p>
-    <p> <strong>Z: </strong> {{ acceleration ? acceleration.z : '-' }} </p>
-    <p> <strong>Time: </strong> {{ acceleration ? gyrosOrientation.timestamp : '-' }} </p>
-    <br>
     
-    <h2>Gyroscope Orientaion</h2>
-    <p> <strong>X: </strong> {{ gyrosOrientation ? gyrosOrientation.x : '-' }} </p>
-    <p> <strong>Y: </strong> {{ gyrosOrientation ? gyrosOrientation.y : '-' }} </p>
-    <p> <strong>Z: </strong> {{ gyrosOrientation ? gyrosOrientation.z : '-' }} </p>
-    <p> <strong>Time: </strong> {{ gyrosOrientation ? gyrosOrientation.timestamp : '-' }} </p>
     
 
 

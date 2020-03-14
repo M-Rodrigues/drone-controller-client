@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+
 import { Gyroscope, GyroscopeOrientation, GyroscopeOptions } from '@ionic-native/gyroscope/ngx';
 import { DeviceMotion, DeviceMotionAccelerationData, DeviceMotionAccelerometerOptions } from '@ionic-native/device-motion/ngx';
+// import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
+
 import { DroneService } from '../api/drone.service';
 
 declare type SensorsOptions = GyroscopeOptions | DeviceMotionAccelerometerOptions;
-declare type SensorOrientation = GyroscopeOrientation | DeviceMotionAccelerationData;
 
 @Component({
   selector: 'app-folder',
@@ -21,12 +23,17 @@ export class FolderPage implements OnInit {
   private sendTime: number;
   public latency: number;
 
+  public buttonStatus = '...';
+
   constructor(
     private activatedRoute: ActivatedRoute,
+    // private screenOrientation: ScreenOrientation,
     private gyrosCtrl: Gyroscope,
     private acceleCtr: DeviceMotion,
     private droneCtrl: DroneService
-  ) { }
+  ) {
+    // this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.LANDSCAPE_PRIMARY);
+  }
 
   ngOnInit() {
     this.folder = this.activatedRoute.snapshot.paramMap.get('id');
@@ -51,29 +58,31 @@ export class FolderPage implements OnInit {
 
   private startSensors() {
     const options: SensorsOptions = {
-      frequency: 90
+      frequency: 100
     };
     this.startGyroscope(options);
     this.startAccelerometer(options);
   }
 
   private startGyroscope(options: SensorsOptions) {
-    this.gyrosCtrl.watch(options as GyroscopeOptions)
-      .subscribe((orientation: GyroscopeOrientation) => this.gyrosOrientation = this.normalize(orientation));
+    // this.gyrosCtrl.watch(options as GyroscopeOptions)
+    //   .subscribe((orientation: GyroscopeOrientation) => this.gyrosOrientation = orientation);
+
+    setInterval(() => {
+      this.gyrosOrientation = {
+        x: 100, y: 100, z: 100, timestamp: Date.now()
+      };
+    }, options.frequency);
   }
 
   private startAccelerometer(options: SensorsOptions) {
-    this.acceleCtr.watchAcceleration(options as DeviceMotionAccelerometerOptions)
-      .subscribe((acceleration: DeviceMotionAccelerationData) => this.acceleration = this.normalize(acceleration));
-  }
+    // this.acceleCtr.watchAcceleration(options as DeviceMotionAccelerometerOptions)
+    //   .subscribe((acceleration: DeviceMotionAccelerationData) => this.acceleration = acceleration);
 
-  private normalize(vector: SensorOrientation) {
-    const modulo = Math.sqrt(Math.pow(vector.x, 2) + Math.pow(vector.y, 2) + Math.pow(vector.z, 2));
-    return vector = {
-      x: vector.x / modulo,
-      y: vector.y / modulo,
-      z: vector.z / modulo,
-      timestamp: vector.timestamp
-    };
+    setInterval(() => {
+      this.acceleration = {
+        x: 100, y: 100, z: 100, timestamp: Date.now()
+      };
+    }, options.frequency);
   }
 }

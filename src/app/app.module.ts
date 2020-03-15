@@ -14,6 +14,7 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 
 import { DroneService } from './api/drone.service';
+import { OrientationService } from './api/orientation.service';
 
 @NgModule({
   declarations: [AppComponent],
@@ -28,9 +29,10 @@ import { DroneService } from './api/drone.service';
     SplashScreen,
     Gyroscope,
     DeviceMotion,
-    DroneService,
     ScreenOrientation,
     Magnetometer,
+    DroneService,
+    OrientationService,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

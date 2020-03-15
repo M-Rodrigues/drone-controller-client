@@ -30,12 +30,12 @@
           <h2>Accelerometer Data</h2>
           <p> <strong>(X, Y, Z)</strong></p>
           <p> (
-            {{ acceleration ? acceleration.x.toFixed(4) : '-' }}, 
-            {{ acceleration ? acceleration.y.toFixed(4) : '-' }}, 
-            {{ acceleration ? acceleration.z.toFixed(4) : '-' }}
+            {{ magnitudes.a ? magnitudes.a.x.toFixed(4) : '-' }}, 
+            {{ magnitudes.a ? magnitudes.a.y.toFixed(4) : '-' }}, 
+            {{ magnitudes.a ? magnitudes.a.z.toFixed(4) : '-' }}
           )
           </p>
-          <p>{{ acceleration ? acceleration.timestamp : '-' }}</p>
+          <p>{{ magnitudes.a ? magnitudes.a.timestamp : '-' }}</p>
         </ion-col>
       </ion-row>
       <ion-row>
@@ -43,12 +43,12 @@
           <h2>Gyroscope Data</h2>
           <p> <strong>(X, Y, Z)</strong></p>
           <p> (
-            {{ gyrosOrientation ? gyrosOrientation.x.toFixed(4) : '-' }}, 
-            {{ gyrosOrientation ? gyrosOrientation.y.toFixed(4) : '-' }}, 
-            {{ gyrosOrientation ? gyrosOrientation.z.toFixed(4) : '-' }}
+            {{ magnitudes.g ? magnitudes.g.x.toFixed(4) : '-' }}, 
+            {{ magnitudes.g ? magnitudes.g.y.toFixed(4) : '-' }}, 
+            {{ magnitudes.g ? magnitudes.g.z.toFixed(4) : '-' }}
           )
           </p>
-          <p>{{ gyrosOrientation ? gyrosOrientation.timestamp : '-' }}</p>
+          <p>{{ magnitudes.g ? magnitudes.g.timestamp : '-' }}</p>
         </ion-col>
       </ion-row>
       <ion-row>
@@ -56,12 +56,13 @@
           <h2>Magnometer Data</h2>
           <p> <strong>(X, Y, Z)</strong></p>
           <p> (
-            {{ magnometer ? magnometer.x.toFixed(4) : '-' }}, 
-            {{ magnometer ? magnometer.y.toFixed(4) : '-' }}, 
-            {{ magnometer ? magnometer.z.toFixed(4) : '-' }}
+            {{ magnitudes.m ? magnitudes.m.x.toFixed(4) : '-' }}, 
+            {{ magnitudes.m ? magnitudes.m.y.toFixed(4) : '-' }}, 
+            {{ magnitudes.m ? magnitudes.m.z.toFixed(4) : '-' }}
           )
           </p>
-          <p>{{ magnometer ? magnometer.timestamp : '-' }}</p>
+          <p> {{ magnitudes.m ? magnitudes.m.magnitude.toFixed(3) : '-' }} </p>
+          <p>{{ magnitudes.m ? magnitudes.m.timestamp : '-' }}</p>
         </ion-col>
       </ion-row>
     </ion-grid>

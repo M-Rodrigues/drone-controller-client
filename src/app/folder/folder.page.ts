@@ -55,7 +55,7 @@ export class FolderPage implements OnInit {
 
   private readOrientation() {
     setInterval(() => {
-      this.orientation = this.orientServ.getOrientation();
+      this.orientation = this.orientServ.getOrientation(MAGNITUDES_INTERVAL_MS);
     }, MAGNITUDES_INTERVAL_MS);
   }
 }

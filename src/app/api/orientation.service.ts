@@ -84,29 +84,25 @@ export class OrientationService {
     };
   }
 
-  public getOrientation(): IOrientation {
+  public getOrientation(dt: number): IOrientation {
     // acc roll
-    const rollAcc = Math.atan(this.accData.y / this.accData.z);
+    const rollAcc = Math.atan(this.accData.x / this.accData.z);
     // acc pitch
-    const pitchAcc = Math.atan((-1 * this.accData.x) / (this.accData.y * Math.sin(rollAcc) + this.accData.z * Math.cos(rollAcc)));
+    const pitchAcc = Math.atan((-1 * this.accData.y) / (this.accData.x * Math.sin(rollAcc) + this.accData.z * Math.cos(rollAcc)));
 
     // roll
-    const roll = this.p * (this.currOrient.roll + this.gyrData.y * this.dt) + (1 - this.p) * (rollAcc);
+    const roll = this.p * (this.currOrient.roll + this.gyrData.y * dt) + (1 - this.p) * (rollAcc);
     // pitch
-    const pitch = this.p * (this.currOrient.pitch + this.gyrData.x * this.dt) + (1 - this.p) * (pitchAcc);
+    const pitch = this.p * (this.currOrient.pitch + this.gyrData.x * dt) + (1 - this.p) * (pitchAcc);
 
     // mag roll
-    const rollMag = Math.atan(this.magData.y / this.magData.z);
+    const rollMag = Math.atan(this.magData.x / this.magData.z);
     // mag pitch
-    const pitchMag = Math.atan((-1 * this.magData.x) / (this.magData.y * Math.sin(rollMag) + this.magData.z * Math.cos(rollMag)));
+    const pitchMag = Math.atan((-1 * this.magData.y) / (this.magData.x * Math.sin(rollMag) + this.magData.z * Math.cos(rollMag)));
     // mag yaw
     const [sRoll, cRoll, sPitch, cPitch] = [Math.sin(rollMag), Math.cos(rollMag), Math.sin(pitchMag), Math.cos(pitchMag)];
     const yaw = Math.atan((sRoll - cRoll) / (cPitch + sPitch * sRoll + sPitch * cRoll));
 
-    console.log('[rollAcc, pitchAcc]', [rollAcc, pitchAcc]);
-    console.log('[rollMag, pitchMag]', [rollMag, pitchMag, yaw]);
-    console.log('[roll, pitch, yaw]', [roll, pitch, yaw]);
-    console.log('[roll`, pitch`, yaw`]', [roll * 180 / Math.PI, pitch * 180 / Math.PI, yaw * 180 / Math.PI]);
     return this.currOrient = { roll, pitch, yaw };
   }
 }

@@ -91,9 +91,9 @@ export class OrientationService {
     const pitchAcc = Math.atan((-1 * this.accData.y) / (this.accData.x * Math.sin(rollAcc) + this.accData.z * Math.cos(rollAcc)));
 
     // roll
-    const roll = this.p * (this.currOrient.roll + this.gyrData.y * dt) + (1 - this.p) * (rollAcc);
+    const roll = this.p * (this.currOrient.roll + this.gyrData.y * dt / 1000.0) + (1 - this.p) * (rollAcc);
     // pitch
-    const pitch = this.p * (this.currOrient.pitch + this.gyrData.x * dt) + (1 - this.p) * (pitchAcc);
+    const pitch = this.p * (this.currOrient.pitch + this.gyrData.x * dt / 1000.0) + (1 - this.p) * (pitchAcc);
 
     // mag roll
     const rollMag = Math.atan(this.magData.x / this.magData.z);

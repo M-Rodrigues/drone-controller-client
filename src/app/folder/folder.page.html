@@ -28,18 +28,41 @@
       <ion-row>
         <ion-col>
           <h2>Accelerometer Data</h2>
-          <p> <strong>X: </strong> {{ acceleration ? acceleration.x : '-' }} </p>
-          <p> <strong>Y: </strong> {{ acceleration ? acceleration.y : '-' }} </p>
-          <p> <strong>Z: </strong> {{ acceleration ? acceleration.z : '-' }} </p>
-          <p> <strong>Time: </strong> {{ acceleration ? gyrosOrientation.timestamp : '-' }} </p>
+          <p> <strong>(X, Y, Z)</strong></p>
+          <p> (
+            {{ acceleration ? acceleration.x.toFixed(4) : '-' }}, 
+            {{ acceleration ? acceleration.y.toFixed(4) : '-' }}, 
+            {{ acceleration ? acceleration.z.toFixed(4) : '-' }}
+          )
+          </p>
+          <p>{{ acceleration ? acceleration.timestamp : '-' }}</p>
         </ion-col>
-        <ion-col>
-          <h2>Gyroscope Orientaion</h2>
-          <p> <strong>X: </strong> {{ gyrosOrientation ? gyrosOrientation.x : '-' }} </p>
-          <p> <strong>Y: </strong> {{ gyrosOrientation ? gyrosOrientation.y : '-' }} </p>
-          <p> <strong>Z: </strong> {{ gyrosOrientation ? gyrosOrientation.z : '-' }} </p>
-          <p> <strong>Time: </strong> {{ gyrosOrientation ? gyrosOrientation.timestamp : '-' }} </p>
-        </ion-col>        
+      </ion-row>
+      <ion-row>
+        <ion-col>          
+          <h2>Gyroscope Data</h2>
+          <p> <strong>(X, Y, Z)</strong></p>
+          <p> (
+            {{ gyrosOrientation ? gyrosOrientation.x.toFixed(4) : '-' }}, 
+            {{ gyrosOrientation ? gyrosOrientation.y.toFixed(4) : '-' }}, 
+            {{ gyrosOrientation ? gyrosOrientation.z.toFixed(4) : '-' }}
+          )
+          </p>
+          <p>{{ gyrosOrientation ? gyrosOrientation.timestamp : '-' }}</p>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>          
+          <h2>Magnometer Data</h2>
+          <p> <strong>(X, Y, Z)</strong></p>
+          <p> (
+            {{ magnometer ? magnometer.x.toFixed(4) : '-' }}, 
+            {{ magnometer ? magnometer.y.toFixed(4) : '-' }}, 
+            {{ magnometer ? magnometer.z.toFixed(4) : '-' }}
+          )
+          </p>
+          <p>{{ magnometer ? magnometer.timestamp : '-' }}</p>
+        </ion-col>
       </ion-row>
     </ion-grid>
     

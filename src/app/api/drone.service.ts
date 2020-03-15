@@ -16,8 +16,9 @@ export class DroneService {
 
   public async connect() {
     return new Promise((resolve, reject) => {
-      if (this.socket.connected) { resolve(); }
-      this.socket.on('connect', () => resolve());
+      this.socket.on('connected', () => {
+        resolve();
+      });
     });
   }
 
@@ -32,10 +33,8 @@ export class DroneService {
   }
 
   public send(data) {
-    console.log('::send()');
-
     if (this.socket.connected) {
-      console.log('::send() sending...', data);
+      console.log('send', data, Date.now());
       this.socket.emit('sensor_data', data);
     }
   }

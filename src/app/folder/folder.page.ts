@@ -1,11 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Gyroscope, GyroscopeOrientation, GyroscopeOptions } from '@ionic-native/gyroscope/ngx';
-import { DeviceMotion, DeviceMotionAccelerationData, DeviceMotionAccelerometerOptions } from '@ionic-native/device-motion/ngx';
-import { DroneService } from '../api/drone.service';
 
-declare type SensorsOptions = GyroscopeOptions | DeviceMotionAccelerometerOptions;
-declare type SensorOrientation = GyroscopeOrientation | DeviceMotionAccelerationData;
+import { DroneService } from '../api/drone.service';
+import { OrientationService, IMagnitudes, IOrientation } from '../api/orientation.service';
+
+const MAGNITUDES_INTERVAL_MS = 1;
 
 @Component({
   selector: 'app-folder',
@@ -14,66 +13,49 @@ declare type SensorOrientation = GyroscopeOrientation | DeviceMotionAcceleration
 })
 export class FolderPage implements OnInit {
   public folder: string;
-  public gyrosOrientation: GyroscopeOrientation;
-  public acceleration: DeviceMotionAccelerationData;
 
-  public connStatus = 'waiting connection...';
+  public connStatus = 'waiting...';
   private sendTime: number;
   public latency: number;
 
+  private magnitudes: IMagnitudes = { a: undefined, g: undefined, m: undefined };
+  private orientation: IOrientation = { roll: undefined, pitch: undefined, yaw: undefined };
+
   constructor(
     private activatedRoute: ActivatedRoute,
-    private gyrosCtrl: Gyroscope,
-    private acceleCtr: DeviceMotion,
+    private orientServ: OrientationService,
     private droneCtrl: DroneService
-  ) { }
+  ) {
+    this.readMagnitudes();
+    this.readOrientation();
+  }
 
   ngOnInit() {
     this.folder = this.activatedRoute.snapshot.paramMap.get('id');
-    this.startSensors();
 
     this.droneCtrl.connect()
       .then(() => {
         this.connStatus = 'connected!';
-        this.droneCtrl.readyToSend()
-          .subscribe(() => {
-            // Tracking latency time
-            const ackTime = Date.now();
-            if (this.sendTime) { this.latency = ackTime - this.sendTime; }
-            this.sendTime = ackTime;
 
-            // Send data to drone
-            this.droneCtrl.send({ g: this.gyrosOrientation, a: this.acceleration });
-          });
-      })
-      .catch(error => this.connStatus = `Error connecting: ${error}`);
+        setInterval(() => {
+          const ackTime = Date.now();
+          if (this.sendTime) { this.latency = ackTime - this.sendTime; }
+          this.sendTime = ackTime;
+
+          this.droneCtrl.send(this.magnitudes);
+        }, 2);
+      });
   }
 
-  private startSensors() {
-    const options: SensorsOptions = {
-      frequency: 90
-    };
-    this.startGyroscope(options);
-    this.startAccelerometer(options);
+  private readMagnitudes() {
+    setInterval(() => {
+      this.magnitudes = this.orientServ.getMagnitudes();
+    }, MAGNITUDES_INTERVAL_MS);
   }
 
-  private startGyroscope(options: SensorsOptions) {
-    this.gyrosCtrl.watch(options as GyroscopeOptions)
-      .subscribe((orientation: GyroscopeOrientation) => this.gyrosOrientation = this.normalize(orientation));
-  }
-
-  private startAccelerometer(options: SensorsOptions) {
-    this.acceleCtr.watchAcceleration(options as DeviceMotionAccelerometerOptions)
-      .subscribe((acceleration: DeviceMotionAccelerationData) => this.acceleration = this.normalize(acceleration));
-  }
-
-  private normalize(vector: SensorOrientation) {
-    const modulo = Math.sqrt(Math.pow(vector.x, 2) + Math.pow(vector.y, 2) + Math.pow(vector.z, 2));
-    return vector = {
-      x: vector.x / modulo,
-      y: vector.y / modulo,
-      z: vector.z / modulo,
-      timestamp: vector.timestamp
-    };
+  private readOrientation() {
+    setInterval(() => {
+      this.orientation = this.orientServ.getOrientation(MAGNITUDES_INTERVAL_MS);
+    }, MAGNITUDES_INTERVAL_MS);
   }
 }

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import * as io from 'socket.io-client';
 
-const DRONE_URL = 'https://1c6481cb.ngrok.io';
+const DRONE_URL = 'http://169.254.91.185:5000';
 
 @Injectable({
   providedIn: 'root'
@@ -11,13 +11,14 @@ export class DroneService {
   private socket;
 
   constructor() {
-    this.socket = io(DRONE_URL);
+    this.socket = io(DRONE_URL, {secure: true});
   }
 
   public async connect() {
     return new Promise((resolve, reject) => {
-      if (this.socket.connected) { resolve(); }
-      this.socket.on('connect', () => resolve());
+      this.socket.on('connected', () => {
+        resolve();
+      });
     });
   }
 
@@ -32,12 +33,9 @@ export class DroneService {
   }
 
   public send(data) {
-    console.log('::send()');
-
     if (this.socket.connected) {
-      console.log('::send() sending...');
+      console.log('send', data, Date.now());
       this.socket.emit('sensor_data', data);
     }
-
   }
 }

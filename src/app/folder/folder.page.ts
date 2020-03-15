@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { DroneService } from '../api/drone.service';
-import { OrientationService, IMagnitudes } from '../api/orientation.service';
+import { OrientationService, IMagnitudes, IOrientation } from '../api/orientation.service';
 
 const MAGNITUDES_INTERVAL_MS = 1;
 
@@ -19,6 +19,7 @@ export class FolderPage implements OnInit {
   public latency: number;
 
   private magnitudes: IMagnitudes = { a: undefined, g: undefined, m: undefined };
+  private orientation: IOrientation = { roll: undefined, pitch: undefined, yaw: undefined };
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -26,6 +27,7 @@ export class FolderPage implements OnInit {
     private droneCtrl: DroneService
   ) {
     this.readMagnitudes();
+    this.readOrientation();
   }
 
   ngOnInit() {
@@ -48,6 +50,12 @@ export class FolderPage implements OnInit {
   private readMagnitudes() {
     setInterval(() => {
       this.magnitudes = this.orientServ.getMagnitudes();
+    }, MAGNITUDES_INTERVAL_MS);
+  }
+
+  private readOrientation() {
+    setInterval(() => {
+      this.orientation = this.orientServ.getOrientation();
     }, MAGNITUDES_INTERVAL_MS);
   }
 }

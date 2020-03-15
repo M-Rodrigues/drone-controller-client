@@ -65,11 +65,15 @@
           <p>{{ magnitudes.m ? magnitudes.m.timestamp : '-' }}</p>
         </ion-col>
       </ion-row>
+      <ion-row>
+        <ion-col>          
+          <p><strong>(
+            {{ orientation.pitch ? orientation.pitch.toFixed(2) : '-' }}, 
+            {{ orientation.roll ? orientation.roll.toFixed(2) : '-' }}, 
+            {{ orientation.yaw ? orientation.yaw.toFixed(2) : '-' }}
+          )</strong></p>
+        </ion-col>
+      </ion-row>
     </ion-grid>
-    
-    
-    
-
-
   </div>
 </ion-content>

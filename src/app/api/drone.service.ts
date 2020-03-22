@@ -2,7 +2,12 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import * as io from 'socket.io-client';
 
-const DRONE_URL = 'http://169.254.91.185:5000';
+import { BluetoothSerial } from '@ionic-native/bluetooth-serial/ngx';
+
+// const DRONE_URL = 'http://169.254.91.185:5000';
+// const DRONE_URL = 'http://localhost:5000';
+// const DRONE_URL = 'https://3ad3899e.ngrok.io';
+const DRONE_URL = 'http://192.168.137.237:5000';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +15,9 @@ const DRONE_URL = 'http://169.254.91.185:5000';
 export class DroneService {
   private socket;
 
-  constructor() {
+  constructor(
+    private bluetoothCtrl: BluetoothSerial
+  ) {
     this.socket = io(DRONE_URL, {secure: true});
   }
 
@@ -37,5 +44,9 @@ export class DroneService {
       console.log('send', data, Date.now());
       this.socket.emit('sensor_data', data);
     }
+  }
+
+  public connectBluetooth() {
+
   }
 }

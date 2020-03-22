@@ -24,7 +24,7 @@ export class FolderPage implements OnInit {
   constructor(
     private activatedRoute: ActivatedRoute,
     private orientServ: OrientationService,
-    private droneCtrl: DroneService
+    private droneCtrl: DroneService,
   ) {
     this.readMagnitudes();
     this.readOrientation();
@@ -33,17 +33,20 @@ export class FolderPage implements OnInit {
   ngOnInit() {
     this.folder = this.activatedRoute.snapshot.paramMap.get('id');
 
+    this.droneCtrl.connectBluetooth();
+
     this.droneCtrl.connect()
       .then(() => {
         this.connStatus = 'connected!';
 
-        setInterval(() => {
-          const ackTime = Date.now();
-          if (this.sendTime) { this.latency = ackTime - this.sendTime; }
-          this.sendTime = ackTime;
+        this.droneCtrl.readyToSend()
+          .subscribe(() => {
+            const ackTime = Date.now();
+            if (this.sendTime) { this.latency = ackTime - this.sendTime; }
+            this.sendTime = ackTime;
 
-          this.droneCtrl.send(this.magnitudes);
-        }, 2);
+            this.droneCtrl.send(this.magnitudes);
+          });
       });
   }
 

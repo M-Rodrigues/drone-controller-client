@@ -32,13 +32,15 @@ export interface IOrientation {
   yaw: number;
 }
 
+const v0 = { x: 0, y: 0, z: 0, timestamp: 0 };
+
 @Injectable({
   providedIn: 'root'
 })
 export class OrientationService {
-  private accData: AccelerometerData;
-  private gyrData: GyroscopeData;
-  private magData: MagnetometerData;
+  private accData: AccelerometerData = v0;
+  private gyrData: GyroscopeData = v0;
+  private magData: MagnetometerData = { ...v0, magnitude: 0 };
 
   private t = 0;
   private dt: number = Date.now();

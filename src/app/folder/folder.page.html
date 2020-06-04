@@ -15,65 +15,88 @@
   </ion-header>
 
   
-  <div id="container">    
+  
+  <div id="container">
+    <ion-button expand="full" class="submit-button" (click)="listPairedDevices()">
+      <ion-icon name="refresh"></ion-icon>&nbsp;Refresh Bluetooth Devices
+    </ion-button>
+  
+    <ion-row>
+      <ion-col>
+        <ion-list radio-group [(ngModel)]="pairedDeviceID" *ngIf="listToggle">
+          <ion-item *ngFor="let i of pairedList;let j=index">
+            <ion-label>{{i.name}}</ion-label>
+            <ion-radio value="{{j}}" ></ion-radio>
+          </ion-item>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+  
+    <ion-button expand="full" class="submit-button" *ngIf="listToggle" (click)="selectDevice()">
+      <ion-icon name="bluetooth"></ion-icon>&nbsp;Connect Bluetooth Devices
+    </ion-button>
+  
+    <ion-list>
+      <ion-item>
+        <ion-label floating>Type The Data You want to Send</ion-label>
+        <ion-input type="text" name="datasend" [(ngModel)]="dataSend"></ion-input>
+      </ion-item>
+    </ion-list>
+  
+    <ion-button expand="full" class="submit-button" (click)="sendData()">
+      <ion-icon name="send"></ion-icon>&nbsp;Send Data Via Bluetooth
+    </ion-button>
+
     <ion-grid>
       <ion-row>
-        <ion-col>
-          <p> <strong>Conn: </strong> {{ connStatus }} </p>
-        </ion-col>
-        <ion-col>
-          <p> <strong>Latency: </strong> {{ latency }} </p>
-        </ion-col>
+        <ion-col size="6"><strong>Conn:</strong> {{ connStatus }}</ion-col>
+        <ion-col size="6"><strong>Latency: </strong> {{ latency }}</ion-col>
+      </ion-row>
+    </ion-grid>
+    
+    
+    <ion-grid>
+      <ion-row>
+        <ion-col size="3"></ion-col>
+        <ion-col size="3"><strong>X</strong></ion-col>
+        <ion-col size="3"><strong>Y</strong></ion-col>
+        <ion-col size="3"><strong>Z</strong></ion-col>
       </ion-row>
       <ion-row>
-        <ion-col>
-          <h2>Accelerometer Data</h2>
-          <p> <strong>(X, Y, Z)</strong></p>
-          <p> (
-            {{ magnitudes.a ? magnitudes.a.x.toFixed(4) : '-' }}, 
-            {{ magnitudes.a ? magnitudes.a.y.toFixed(4) : '-' }}, 
-            {{ magnitudes.a ? magnitudes.a.z.toFixed(4) : '-' }}
-          )
-          </p>
-          <p>{{ magnitudes.a ? magnitudes.a.timestamp : '-' }}</p>
-        </ion-col>
+        <ion-col size="3"><strong>Acc</strong></ion-col>
+        <ion-col size="3">{{ magnitudes.a ? magnitudes.a.x.toFixed(4) : '-' }}</ion-col>
+        <ion-col size="3">{{ magnitudes.a ? magnitudes.a.y.toFixed(4) : '-' }}</ion-col>
+        <ion-col size="3">{{ magnitudes.a ? magnitudes.a.z.toFixed(4) : '-' }}</ion-col>
       </ion-row>
       <ion-row>
-        <ion-col>          
-          <h2>Gyroscope Data</h2>
-          <p> <strong>(X, Y, Z)</strong></p>
-          <p> (
-            {{ magnitudes.g ? magnitudes.g.x.toFixed(4) : '-' }}, 
-            {{ magnitudes.g ? magnitudes.g.y.toFixed(4) : '-' }}, 
-            {{ magnitudes.g ? magnitudes.g.z.toFixed(4) : '-' }}
-          )
-          </p>
-          <p>{{ magnitudes.g ? magnitudes.g.timestamp : '-' }}</p>
-        </ion-col>
+        <ion-col size="3"><strong>Gyr</strong></ion-col>
+        <ion-col size="3">{{ magnitudes.g ? magnitudes.g.x.toFixed(4) : '-' }}</ion-col>
+        <ion-col size="3">{{ magnitudes.g ? magnitudes.g.y.toFixed(4) : '-' }}</ion-col>
+        <ion-col size="3">{{ magnitudes.g ? magnitudes.g.z.toFixed(4) : '-' }}</ion-col>
       </ion-row>
       <ion-row>
-        <ion-col>          
-          <h2>Magnometer Data</h2>
-          <p> <strong>(X, Y, Z)</strong></p>
-          <p> (
-            {{ magnitudes.m ? magnitudes.m.x.toFixed(4) : '-' }}, 
-            {{ magnitudes.m ? magnitudes.m.y.toFixed(4) : '-' }}, 
-            {{ magnitudes.m ? magnitudes.m.z.toFixed(4) : '-' }}
-          )
-          </p>
-          <p> {{ magnitudes.m ? magnitudes.m.magnitude.toFixed(3) : '-' }} </p>
-          <p>{{ magnitudes.m ? magnitudes.m.timestamp : '-' }}</p>
-        </ion-col>
+        <ion-col size="3"><strong>Mag</strong></ion-col>
+        <ion-col size="3">{{ magnitudes.m ? magnitudes.m.x.toFixed(4) : '-' }}</ion-col>
+        <ion-col size="3">{{ magnitudes.m ? magnitudes.m.y.toFixed(4) : '-' }}</ion-col>
+        <ion-col size="3">{{ magnitudes.m ? magnitudes.m.z.toFixed(4) : '-' }}</ion-col>
+      </ion-row>
+    </ion-grid>    
+    
+    
+    <ion-grid>
+      <ion-row>
+        <ion-col size="3"></ion-col>
+        <ion-col size="3">pitch</ion-col>
+        <ion-col size="3">roll</ion-col>
+        <ion-col size="3">yaw</ion-col>
       </ion-row>
       <ion-row>
-        <ion-col>          
-          <p><strong>(
-            {{ orientation.pitch ? orientation.pitch.toFixed(2) : '-' }}, 
-            {{ orientation.roll ? orientation.roll.toFixed(2) : '-' }}, 
-            {{ orientation.yaw ? orientation.yaw.toFixed(2) : '-' }}
-          )</strong></p>
-        </ion-col>
+        <ion-col size="3"><strong>Ori</strong></ion-col>
+        <ion-col size="3">{{ orientation.pitch ? orientation.pitch.toFixed(2) : '-' }}</ion-col>
+        <ion-col size="3">{{ orientation.roll ? orientation.roll.toFixed(2) : '-' }}</ion-col>
+        <ion-col size="3">{{ orientation.yaw ? orientation.yaw.toFixed(2) : '-' }}</ion-col>
       </ion-row>
     </ion-grid>
   </div>
+
 </ion-content>

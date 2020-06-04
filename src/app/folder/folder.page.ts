@@ -4,7 +4,18 @@ import { ActivatedRoute } from '@angular/router';
 import { DroneService } from '../api/drone.service';
 import { OrientationService, IMagnitudes, IOrientation } from '../api/orientation.service';
 
+import { AlertController, ToastController } from '@ionic/angular';
+import { BluetoothSerial } from '@ionic-native/bluetooth-serial/ngx';
+
 const MAGNITUDES_INTERVAL_MS = 1;
+
+// tslint:disable-next-line: class-name
+interface pairedlist {
+  'class': number;
+  'id': string;
+  'address': string;
+  'name': string;
+}
 
 @Component({
   selector: 'app-folder',
@@ -25,15 +36,110 @@ export class FolderPage implements OnInit {
     private activatedRoute: ActivatedRoute,
     private orientServ: OrientationService,
     private droneCtrl: DroneService,
+    private alertCtrl: AlertController,
+    private toastCtrl: ToastController,
+    private bluetoothSerial: BluetoothSerial,
   ) {
+    this.checkBluetoothEnabled();
     this.readMagnitudes();
     this.readOrientation();
   }
 
+  pairedList: pairedlist;
+  listToggle = false;
+  pairedDeviceID = 0;
+  dataSend = '';
+
+  checkBluetoothEnabled() {
+    this.bluetoothSerial.isEnabled()
+    .then(success => {
+      this.listPairedDevices();
+    }, error => {
+      this.showError('Please Enable Bluetooth');
+    });
+  }
+
+  listPairedDevices() {
+    this.bluetoothSerial.list().then(success => {
+      this.pairedList = success;
+      this.listToggle = true;
+    }, error => {
+      this.showError('Please Enable Bluetooth');
+      this.listToggle = false;
+    });
+  }
+
+  selectDevice() {
+    const connectedDevice = this.pairedList[this.pairedDeviceID];
+    if (!connectedDevice.address) {
+      this.showError('Select Paired Device to connect');
+      return;
+    }
+    const address = connectedDevice.address;
+    const name = connectedDevice.name;
+
+    this.connect(address);
+  }
+
+  connect(address) {
+    // Attempt to connect device with specified address, call app.deviceConnected if success
+    this.bluetoothSerial.connect(address).subscribe(success => {
+      this.deviceConnected();
+      this.showToast('Successfully Connected');
+    }, error => {
+      this.showError(JSON.stringify(error));
+    });
+  }
+
+  deviceConnected() {
+    // Subscribe to data receiving as soon as the delimiter is read
+    this.bluetoothSerial.subscribe('\n').subscribe(success => {
+      this.handleData(success);
+      this.showToast('Connected Successfullly');
+    }, error => {
+      this.showError(error);
+    });
+  }
+
+  deviceDisconnected() {
+    // Unsubscribe from data receiving
+    this.bluetoothSerial.disconnect();
+    this.showToast('Device Disconnected');
+  }
+
+  handleData(data) {
+    this.showToast(data);
+  }
+
+  sendData() {
+    this.dataSend = JSON.stringify(this.orientation) + '\n';
+    this.showToast(this.dataSend);
+    this.bluetoothSerial.write(this.dataSend).then(success => {
+      this.showToast(success);
+    }, error => {
+      this.showError(error);
+    });
+  }
+
+  async showToast(msj) {
+    const toast = await this.toastCtrl.create({
+      message: msj,
+      duration: 1000
+    });
+    toast.present();
+  }
+
+  async showError(error) {
+    const alert = await this.alertCtrl.create({
+      header: 'Error',
+      message: error,
+      buttons: ['Dismiss']
+    });
+    alert.present();
+  }
+
   ngOnInit() {
     this.folder = this.activatedRoute.snapshot.paramMap.get('id');
-
-    this.droneCtrl.connectBluetooth();
 
     this.droneCtrl.connect()
       .then(() => {
